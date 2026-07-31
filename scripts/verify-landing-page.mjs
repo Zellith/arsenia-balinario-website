@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 
 const targetUrl = process.env.TARGET_URL ?? "http://localhost:3000";
 const response = await fetch(targetUrl);
@@ -6,6 +7,10 @@ const response = await fetch(targetUrl);
 assert.equal(response.status, 200, `Expected ${targetUrl} to return HTTP 200`);
 
 const html = await response.text();
+const styles = await readFile(
+  new URL("../src/app/globals.css", import.meta.url),
+  "utf8",
+);
 const requiredText = [
   "SkyBound Travel Hub",
   "A simpler, more personal way to book your next flight.",
@@ -62,6 +67,29 @@ const airlineLogos = html.match(/data-airline-logo=/g) ?? [];
 assert.ok(
   airlineLogos.length >= 6,
   "Expected at least six recognizable airline logo treatments",
+);
+
+for (const airlineAsset of [
+  "/airlines/philippine-airlines.svg",
+  "/airlines/cebu-pacific.svg",
+  "/airlines/airasia.svg",
+  "/airlines/singapore-airlines.svg",
+  "/airlines/emirates.svg",
+  "/airlines/qatar-airways.svg",
+]) {
+  assert.ok(
+    html.includes(airlineAsset),
+    `Missing locally hosted airline asset: ${airlineAsset}`,
+  );
+}
+
+assert.ok(
+  !styles.includes("airline-logo-sprite"),
+  "Airline marks must use dedicated image assets rather than a poster sprite",
+);
+assert.ok(
+  !styles.includes("arsenia-travel-poster.jpg"),
+  "The low-resolution poster must not supply rendered airline marks",
 );
 
 assert.ok(

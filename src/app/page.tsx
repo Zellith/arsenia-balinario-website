@@ -18,12 +18,48 @@ const trustItems = [
 ];
 
 const airlines = [
-  { name: "Philippine Airlines", logoClass: "airline-logo-pal" },
-  { name: "Cebu Pacific", logoClass: "airline-logo-cebu" },
-  { name: "AirAsia", logoClass: "airline-logo-airasia" },
-  { name: "Singapore Airlines", logoClass: "airline-logo-singapore" },
-  { name: "Emirates", logoClass: "airline-logo-emirates" },
-  { name: "Qatar Airways", logoClass: "airline-logo-qatar" },
+  {
+    name: "Philippine Airlines",
+    src: "/airlines/philippine-airlines.svg",
+    width: 473,
+    height: 78,
+    logoClass: "airline-logo-wide",
+  },
+  {
+    name: "Cebu Pacific",
+    src: "/airlines/cebu-pacific.svg",
+    width: 500,
+    height: 98,
+    logoClass: "airline-logo-wide",
+  },
+  {
+    name: "AirAsia",
+    src: "/airlines/airasia.svg",
+    width: 1000,
+    height: 300,
+    logoClass: "airline-logo-compact",
+  },
+  {
+    name: "Singapore Airlines",
+    src: "/airlines/singapore-airlines.svg",
+    width: 468,
+    height: 48,
+    logoClass: "airline-logo-extra-wide",
+  },
+  {
+    name: "Emirates",
+    src: "/airlines/emirates.svg",
+    width: 131,
+    height: 90,
+    logoClass: "airline-logo-tall",
+  },
+  {
+    name: "Qatar Airways",
+    src: "/airlines/qatar-airways.svg",
+    width: 100,
+    height: 35,
+    logoClass: "airline-logo-standard",
+  },
 ];
 
 const processSteps = [
@@ -237,10 +273,16 @@ function AirlineBand() {
                 data-airline-logo={airline.name}
                 key={airline.name}
               >
-                <span
-                  aria-hidden="true"
-                  className={`airline-logo-sprite ${airline.logoClass}`}
-                />
+                <span aria-hidden="true" className="airline-logo-frame">
+                  <Image
+                    alt=""
+                    className={`airline-logo-image ${airline.logoClass}`}
+                    height={airline.height}
+                    src={airline.src}
+                    unoptimized
+                    width={airline.width}
+                  />
+                </span>
                 <span className="text-center font-mono text-[10px] font-semibold uppercase tracking-[0.11em] text-muted transition-colors duration-200 group-hover:text-ink">
                   {airline.name}
                 </span>

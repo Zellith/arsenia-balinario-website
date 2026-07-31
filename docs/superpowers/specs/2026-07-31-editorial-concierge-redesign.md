@@ -63,7 +63,7 @@ flowchart TD
 
 - Give airline coverage its own compact, full-width section.
 - Use a curated six-mark logo rail with generous spacing: Philippine Airlines, Cebu Pacific, AirAsia, Singapore Airlines, Emirates, and Qatar Airways.
-- Reuse recognizable marks from the user-supplied travel artwork or an established open brand-icon source; do not redraw or fabricate airline identities.
+- Use locally hosted, full-color vector marks from official-origin Wikimedia Commons files; do not redraw airline identities or crop them from the low-resolution poster.
 - Pair each mark with accessible airline naming and the label **“Airlines frequently requested.”**
 - State that availability depends on route and schedule. Do not imply endorsement or partnership.
 - This section establishes breadth; it must not repeat the flyer or explain the booking process.

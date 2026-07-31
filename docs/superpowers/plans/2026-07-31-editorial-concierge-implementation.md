@@ -6,7 +6,7 @@
 
 **Goal:** Rebuild the Arsenia Messenger landing page as the approved Direction A editorial-concierge experience, then apply the approved SkyBound Travel Hub identity, airline-logo rail, and subtle motion refinement.
 
-**Architecture:** Keep the site as a static Next.js App Router page with local, named server components inside `src/app/page.tsx`; no client-side state or new runtime dependencies are needed. Centralize the visual and motion systems in `src/app/globals.css`, reuse verified airline marks from the supplied source artwork as a local sprite treatment, and gate the generated portrait through image inspection before it is referenced by the page.
+**Architecture:** Keep the site as a static Next.js App Router page with local, named server components inside `src/app/page.tsx`; no client-side state or new runtime dependencies are needed. Centralize the visual and motion systems in `src/app/globals.css`, render verified airline marks from dedicated local vector assets, and gate the generated portrait through image inspection before it is referenced by the page.
 
 **Tech Stack:** Next.js 16, React 19, TypeScript, Tailwind CSS 4, `next/image`, Node's built-in runtime for the landing-page contract check, built-in image generation for the portrait edit, temporary Playwright CLI for screenshots only.
 
@@ -30,7 +30,8 @@
 - Create `scripts/verify-landing-page.mjs`: dependency-free rendered-content contract check.
 - Modify `package.json`: expose the contract check as `npm run verify:landing`.
 - Rewrite `src/app/page.tsx`: named section components, SkyBound copy, airline marks, example trip brief, and approved content hierarchy.
-- Modify `src/app/globals.css`: centralized Direction A tokens, logo-sprite treatment, and restrained motion behavior.
+- Create `public/airlines/*.svg`: dedicated full-color airline marks with source provenance recorded in `docs/airline-logo-sources.md`.
+- Modify `src/app/globals.css`: centralized Direction A tokens, optical logo sizing, and restrained motion behavior.
 - Modify `src/app/layout.tsx`: metadata copy only if needed to match the approved message.
 
 ---

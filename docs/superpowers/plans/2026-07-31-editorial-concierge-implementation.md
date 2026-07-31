@@ -16,7 +16,7 @@
 - Primary headline remains exactly “A simpler, more personal way to book your next flight.”
 - Primary CTA remains exactly “Chat with Arsenia on Messenger.”
 - Agency identity is `SkyBound Travel Hub`; the former agency name must not render anywhere on the page or metadata.
-- Use the approved section order: header → hero → trust strip → airline logo band → example trip brief → how it works → closing CTA → footer.
+- Use the approved section order: header → hero → trust strip → airline logo band → trip brief → how it works → closing CTA → footer.
 - Messenger blue is the only interactive accent; phone and email are footer fallbacks.
 - Add no UI framework, animation package, booking form, scheduler, backend, testimonial, or fabricated airline partnership.
 - Use six accessible airline marks, label them as frequently requested, and pair the section with an availability caveat.
@@ -29,7 +29,7 @@
 - Create `public/arsenia-portrait-editorial.png`: identity-preserving hero portrait with a natural complete shoulder line.
 - Create `scripts/verify-landing-page.mjs`: dependency-free rendered-content contract check.
 - Modify `package.json`: expose the contract check as `npm run verify:landing`.
-- Rewrite `src/app/page.tsx`: named section components, SkyBound copy, airline marks, example trip brief, and approved content hierarchy.
+- Rewrite `src/app/page.tsx`: named section components, SkyBound copy, airline marks, trip brief, and approved content hierarchy.
 - Create `public/airlines/*.svg`: dedicated full-color airline marks with source provenance recorded in `docs/airline-logo-sources.md`.
 - Modify `src/app/globals.css`: centralized Direction A tokens, optical logo sizing, and restrained motion behavior.
 - Modify `src/app/layout.tsx`: metadata copy only if needed to match the approved message.
@@ -293,7 +293,7 @@ git commit -m "fix: polish responsive landing page composition"
 
 - [ ] **Step 1: Extend the rendered contract and confirm RED**
 
-Require `SkyBound Travel Hub`, six `data-airline-logo` markers, `Airlines frequently requested`, `Example trip brief`, and `data-motion="subtle"`; reject rendered `Global Pinoy Travel` text.
+Require `SkyBound Travel Hub`, six `data-airline-logo` markers, `Airlines frequently requested`, `Trip brief`, and `data-motion="subtle"`; reject rendered `Global Pinoy Travel` text and redundant example/illustrative qualifiers.
 
 - [ ] **Step 2: Replace the agency identity and metadata**
 
@@ -305,7 +305,7 @@ Render six accessible, recognizable marks at a consistent optical size using cro
 
 - [ ] **Step 4: Replace the old-branded proof panel**
 
-Stop rendering the old flyer and create a single spacious example trip brief using route, dates, and traveler count. Preserve the original source asset in `public/`.
+Stop rendering the old flyer and create a single spacious trip brief using route, dates, and traveler count. Preserve the original source asset in `public/`.
 
 - [ ] **Step 5: Add restrained motion**
 

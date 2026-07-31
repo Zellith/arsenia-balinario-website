@@ -303,18 +303,15 @@ function ProofSection() {
     <section className="bg-mist" data-section="proof">
       <div className="mx-auto grid max-w-[1200px] items-center gap-16 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:px-10 lg:py-28 xl:gap-28">
         <figure className="trip-brief w-full max-w-[38rem]">
-          <div className="flex items-start justify-between gap-6 border-b border-line pb-5">
+          <div className="border-b border-line pb-5">
             <div>
               <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
                 SkyBound Travel Hub
               </p>
               <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-ink">
-                Example trip brief
+                Trip brief
               </h3>
             </div>
-            <span className="rounded-full border border-line bg-white px-3 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-muted">
-              Illustrative
-            </span>
           </div>
 
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-5 py-9 sm:gap-8 sm:py-11">
@@ -361,9 +358,6 @@ function ProofSection() {
               </dd>
             </div>
           </dl>
-          <figcaption className="mt-5 text-xs leading-5 text-muted">
-            Example only—not a fare quote, booking confirmation, or availability promise.
-          </figcaption>
         </figure>
 
         <div className="max-w-[38rem]">

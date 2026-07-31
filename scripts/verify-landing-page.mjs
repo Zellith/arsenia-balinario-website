@@ -22,7 +22,7 @@ const requiredText = [
   "Review flight options",
   "Continue with Arsenia",
   "Airlines frequently requested",
-  "Example trip brief",
+  "Trip brief",
 ];
 
 for (const text of requiredText) {
@@ -58,6 +58,16 @@ assert.ok(
   !html.includes("Global Pinoy Travel"),
   "Retired agency branding must not be rendered",
 );
+for (const redundantQualifier of [
+  "Example trip brief",
+  "Illustrative",
+  "Example only",
+]) {
+  assert.ok(
+    !html.includes(redundantQualifier),
+    `Trip graphic should not render redundant qualifier: ${redundantQualifier}`,
+  );
+}
 assert.ok(
   !/<img[^>]+arsenia-travel-poster\.jpg/i.test(html),
   "The retired flyer must not be rendered as an image",

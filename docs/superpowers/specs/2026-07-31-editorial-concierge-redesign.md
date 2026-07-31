@@ -30,7 +30,7 @@ flowchart TD
     A[Minimal SkyBound header] --> B[Hero: promise, CTA, Arsenia portrait]
     B --> C[Three-part trust strip]
     C --> D[Recognizable airline logo rail]
-    D --> E[Example trip brief + concise supporting copy]
+    D --> E[Trip brief + concise supporting copy]
     E --> F[How it works: three spacious steps]
     F --> G[Dark closing CTA]
     G --> H[Contact footer]
@@ -68,11 +68,11 @@ flowchart TD
 - State that availability depends on route and schedule. Do not imply endorsement or partnership.
 - This section establishes breadth; it must not repeat the flyer or explain the booking process.
 
-### 5. Example Trip Brief
+### 5. Trip Brief
 
 - Remove the old Global Pinoy flyer from the rendered site because it conflicts with the new agency name. Preserve the source file in the repository as archival source material.
-- Use a calm two-column editorial composition: a single spacious **“Example trip brief”** artifact on the left and concise copy on the right.
-- The brief contains only route, dates, and traveler count. It is explicitly illustrative and must not resemble a quote, fare promise, or completed booking.
+- Use a calm two-column editorial composition: a single spacious **“Trip brief”** graphic on the left and concise copy on the right.
+- The brief contains only route, dates, and traveler count. Its website-graphic context carries its role without visible “example” or “illustrative” qualifiers, and it must not resemble a quote, fare promise, or completed booking.
 - Use open space and hairline dividers rather than a cluster of small cards.
 
 ### 6. How It Works
@@ -143,7 +143,7 @@ flowchart TD
 - Mobile hero keeps the copy and Messenger action first, followed immediately by the portrait.
 - Trust items and process steps stack vertically with clear dividers.
 - Airline coverage may become a horizontally scrollable rail if logos are used.
-- The example trip-brief section stacks the illustrative brief first, explanation second, with generous separation.
+- The trip-brief section stacks the graphic first, explanation second, with generous separation.
 - No section should create horizontal overflow or force text into narrow measures.
 
 ## Technical Shape
@@ -162,7 +162,7 @@ flowchart TD
 - Arsenia's portrait has no visibly missing shoulder, poster bleed, harsh mask edge, or improvised crop.
 - SkyBound Travel Hub appears consistently in the header, portrait caption, metadata, and footer; the former agency name does not render.
 - At least six airline marks are recognizable, accessible, and optically balanced without implying a partnership.
-- The example trip brief is visibly illustrative and does not make a fare or availability claim.
+- The trip brief does not make a fare or availability claim and does not label itself as an example or illustration.
 - Motion is subtle, non-looping, and effectively disabled when reduced motion is requested.
 - Messenger is the only primary CTA and works from every placement.
 - Phone and email remain accessible as fallback details.

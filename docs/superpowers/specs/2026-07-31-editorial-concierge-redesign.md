@@ -1,8 +1,8 @@
-# Arsenia Website — Editorial Concierge Redesign
+# SkyBound Travel Hub — Editorial Concierge Redesign
 
 ## Status
 
-Approved visual direction: **Direction A — Editorial concierge**.
+Approved visual direction: **Direction A — Editorial concierge**, revised with the **SkyBound Travel Hub** agency identity, a recognizable airline-logo rail, and restrained motion.
 
 ## Objective
 
@@ -11,25 +11,26 @@ Recompose the entire landing page so it feels like a premium personal travel-con
 The redesign must make three things immediately clear:
 
 1. Arsenia is a real person who can help.
-2. Her service is backed by Global Pinoy Travel & Tours and broad airline coverage.
+2. She represents SkyBound Travel Hub and can help visitors explore broad airline coverage.
 3. Starting requires only one Messenger message.
 
 ## Experience Principles
 
 - **Editorial, not card-heavy.** Use full-width page bands, strong typography, and intentional whitespace. Enclose content only when a boundary communicates something useful.
 - **One idea per section.** Proof, preparation, and conversion must not compete inside the same horizontal cluster.
-- **Human trust first.** Arsenia is the primary human anchor; Global Pinoy provides equal institutional credibility.
-- **Recognizable proof, not decorative density.** The authentic flyer supports credibility but does not dominate the page or carry explanatory copy beside a second card.
+- **Human trust first.** Arsenia is the primary human anchor; SkyBound Travel Hub is the agency identity around her service.
+- **Recognizable coverage, not decorative density.** Airline marks provide quick recognition without implying a formal partnership or turning the page into a logo wall.
 - **One action.** Messenger is the only primary action. Phone and email remain fallback contact information in the footer.
+- **Motion with purpose.** A brief page-load reveal and small hover responses add depth; nothing loops continuously or competes with the Messenger action.
 
 ## Page Composition
 
 ```mermaid
 flowchart TD
-    A[Minimal co-brand header] --> B[Hero: promise, CTA, Arsenia portrait]
+    A[Minimal SkyBound header] --> B[Hero: promise, CTA, Arsenia portrait]
     B --> C[Three-part trust strip]
-    C --> D[Airline coverage band]
-    D --> E[Authentic proof: flyer + concise supporting copy]
+    C --> D[Recognizable airline logo rail]
+    D --> E[Example trip brief + concise supporting copy]
     E --> F[How it works: three spacious steps]
     F --> G[Dark closing CTA]
     G --> H[Contact footer]
@@ -37,7 +38,7 @@ flowchart TD
 
 ### 1. Header
 
-- Preserve equal co-branding: `Global Pinoy Travel & Tours | Arsenia`.
+- Use `SkyBound Travel Hub | Arsenia` as the compact agency-and-consultant lockup.
 - Keep the header quiet and compact so it supports orientation without competing with the hero.
 - Include one text-level Messenger action on larger screens.
 
@@ -61,15 +62,18 @@ flowchart TD
 ### 4. Airline Coverage Band
 
 - Give airline coverage its own compact, full-width section.
-- Use a curated typographic list with generous horizontal spacing: Philippine Airlines, Cebu Pacific, AirAsia, Emirates, Qatar Airways, Singapore Airlines, and “more.” Do not source or fabricate a separate logo library in this pass.
+- Use a curated six-mark logo rail with generous spacing: Philippine Airlines, Cebu Pacific, AirAsia, Singapore Airlines, Emirates, and Qatar Airways.
+- Reuse recognizable marks from the user-supplied travel artwork or an established open brand-icon source; do not redraw or fabricate airline identities.
+- Pair each mark with accessible airline naming and the label **“Airlines frequently requested.”**
+- State that availability depends on route and schedule. Do not imply endorsement or partnership.
 - This section establishes breadth; it must not repeat the flyer or explain the booking process.
 
-### 5. Authentic Proof
+### 5. Example Trip Brief
 
-- Use a calm two-column editorial composition: the authentic flyer on the left, concise credibility copy on the right.
-- Constrain the flyer to a deliberate supporting size so it reads as an artifact visitors may recognize, not as the page's main design language.
-- Do not place the “What to send first” steps in this section.
-- Copy must explain why the flyer matters in two short paragraphs at most.
+- Remove the old Global Pinoy flyer from the rendered site because it conflicts with the new agency name. Preserve the source file in the repository as archival source material.
+- Use a calm two-column editorial composition: a single spacious **“Example trip brief”** artifact on the left and concise copy on the right.
+- The brief contains only route, dates, and traveler count. It is explicitly illustrative and must not resemble a quote, fare promise, or completed booking.
+- Use open space and hairline dividers rather than a cluster of small cards.
 
 ### 6. How It Works
 
@@ -85,11 +89,11 @@ flowchart TD
 - Include a short example message as supportive content, not a competing card.
 - Repeat the primary Messenger button once.
 
-### 8. Footer and Mobile CTA
+### 8. Footer and Mobile Conversion Continuity
 
 - Keep phone and email as fallback contact details in the footer.
-- Preserve a slim sticky Messenger action on mobile with safe-area spacing.
-- Ensure the sticky action does not cover footer content or the final CTA.
+- Keep the hero CTA as the only primary action in the initial mobile viewport.
+- Do not use an always-visible mobile overlay; the header lockup, proof link, and closing CTA preserve conversion access through the page without covering content.
 
 ## Visual System
 
@@ -120,11 +124,18 @@ flowchart TD
 - Avoid decorative gradient blobs, colored glows, excessive shadows, and multiple competing accent colors.
 - Alternate white and warm-neutral section bands to create rhythm without relying on cards.
 
-### Imagery
+### Imagery and Marks
 
 - Hero portrait: generated from the supplied reference with identity preserved, background removed or replaced with a subtle neutral editorial treatment, and the missing shoulder naturally reconstructed.
-- Authentic flyer: retained as proof lower on the page.
-- Neither asset should be stretched, over-cropped, or masked to hide obvious generation/cropping defects.
+- Airline marks: presented at a consistent optical scale inside open cells with restrained separators.
+- The portrait must not be stretched, over-cropped, or masked to hide obvious generation/cropping defects.
+
+### Motion
+
+- Orchestrate one brief hero entrance: eyebrow, headline, supporting copy, CTA, then portrait.
+- Give airline marks and text links small hover/focus responses only; no infinite marquee, bouncing CTA, parallax, or scroll-jacking.
+- Keep animation on opacity and transform for smooth rendering.
+- Respect `prefers-reduced-motion` by reducing every motion effect to an effectively static state.
 
 ## Responsive Behavior
 
@@ -132,16 +143,16 @@ flowchart TD
 - Mobile hero keeps the copy and Messenger action first, followed immediately by the portrait.
 - Trust items and process steps stack vertically with clear dividers.
 - Airline coverage may become a horizontally scrollable rail if logos are used.
-- The proof section stacks flyer first, explanation second, with generous separation.
+- The example trip-brief section stacks the illustrative brief first, explanation second, with generous separation.
 - No section should create horizontal overflow or force text into narrow measures.
 
 ## Technical Shape
 
 - Refactor the current single page into clearly named section components where that improves readability.
 - Centralize repeated color, spacing, radius, and shadow decisions in the existing global styling layer rather than repeating arbitrary values throughout JSX.
-- Reuse the current Next.js and Tailwind setup; add no UI or animation dependency.
+- Reuse the current Next.js and Tailwind setup; implement motion in CSS and add no UI or animation dependency.
 - Generate the revised portrait as a new asset and replace the current cutout only after visual inspection.
-- Preserve the existing Messenger URL, metadata intent, accessibility skip link, focus states, reduced-motion handling, and mobile safe-area behavior.
+- Preserve the existing Messenger URL, metadata intent, accessibility skip link, focus states, and reduced-motion handling.
 
 ## Acceptance Criteria
 
@@ -149,7 +160,10 @@ flowchart TD
 - “What happens next” is a standalone section with visibly more breathing room.
 - The page uses one coherent spacing and typography system from hero through footer.
 - Arsenia's portrait has no visibly missing shoulder, poster bleed, harsh mask edge, or improvised crop.
-- The flyer reads as supporting proof and remains legible without dominating the page.
+- SkyBound Travel Hub appears consistently in the header, portrait caption, metadata, and footer; the former agency name does not render.
+- At least six airline marks are recognizable, accessible, and optically balanced without implying a partnership.
+- The example trip brief is visibly illustrative and does not make a fare or availability claim.
+- Motion is subtle, non-looping, and effectively disabled when reduced motion is requested.
 - Messenger is the only primary CTA and works from every placement.
 - Phone and email remain accessible as fallback details.
 - The layout is visually checked at approximately 375px, 768px, and 1440px widths.
@@ -160,4 +174,4 @@ flowchart TD
 
 - No booking form, scheduler, quote calculator, account, or backend.
 - No fabricated testimonials, response-time guarantees, or airline partnerships.
-- No new visual framework, animation library, or unrelated refactor.
+- No new visual framework, animation library, continuously moving logo marquee, or unrelated refactor.

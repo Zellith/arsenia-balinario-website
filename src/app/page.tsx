@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { AirlineCarousel, type AirlineLogo } from "./airline-carousel";
+
 const messengerUrl = "https://m.me/arsenia.balinario";
 
 const trustItems = [
@@ -17,48 +19,189 @@ const trustItems = [
   },
 ];
 
-const airlines = [
+const localAirlines: AirlineLogo[] = [
   {
     name: "Philippine Airlines",
     src: "/airlines/philippine-airlines.svg",
     width: 473,
     height: 78,
-    logoClass: "airline-logo-wide",
   },
   {
     name: "Cebu Pacific",
     src: "/airlines/cebu-pacific.svg",
     width: 500,
     height: 98,
-    logoClass: "airline-logo-wide",
   },
   {
     name: "AirAsia",
     src: "/airlines/airasia.svg",
     width: 1000,
     height: 300,
-    logoClass: "airline-logo-compact",
   },
+  {
+    name: "Sunlight Air",
+    src: "/airlines/sunlight-air.png",
+    width: 1200,
+    height: 429,
+  },
+  {
+    name: "SKY express",
+    src: "/airlines/sky-express.svg",
+    width: 512,
+    height: 311,
+  },
+  {
+    name: "Philippine Airlines Express",
+    src: "/airlines/philippine-airlines.svg",
+    width: 473,
+    height: 78,
+  },
+  {
+    name: "PAL Express",
+    src: "/airlines/pal-express.svg",
+    width: 519,
+    height: 100,
+  },
+  {
+    name: "AirSWIFT",
+    src: "/airlines/airswift.png",
+    width: 1200,
+    height: 684,
+  },
+  {
+    name: "SEAir",
+    src: "/airlines/seair.png",
+    width: 896,
+    height: 256,
+  },
+  {
+    name: "Cebgo",
+    src: "/airlines/cebgo.svg",
+    width: 763,
+    height: 312,
+  },
+];
+
+const internationalAirlines: AirlineLogo[] = [
   {
     name: "Singapore Airlines",
     src: "/airlines/singapore-airlines.svg",
     width: 468,
     height: 48,
-    logoClass: "airline-logo-extra-wide",
   },
   {
     name: "Emirates",
     src: "/airlines/emirates.svg",
     width: 131,
     height: 90,
-    logoClass: "airline-logo-tall",
   },
   {
     name: "Qatar Airways",
     src: "/airlines/qatar-airways.svg",
     width: 100,
     height: 35,
-    logoClass: "airline-logo-standard",
+  },
+  {
+    name: "Cathay Pacific",
+    src: "/airlines/cathay-pacific.svg",
+    width: 100,
+    height: 14,
+  },
+  {
+    name: "Etihad Airways",
+    src: "/airlines/etihad-airways.svg",
+    width: 310,
+    height: 110,
+  },
+  {
+    name: "Turkish Airlines",
+    src: "/airlines/turkish-airlines.svg",
+    width: 648,
+    height: 103,
+  },
+  {
+    name: "EVA Air",
+    src: "/airlines/eva-air.svg",
+    width: 600,
+    height: 95,
+  },
+  {
+    name: "Korean Air",
+    src: "/airlines/korean-air.svg",
+    width: 672,
+    height: 80,
+  },
+  {
+    name: "China Airlines",
+    src: "/airlines/china-airlines.png",
+    width: 572,
+    height: 176,
+  },
+  {
+    name: "Japan Airlines",
+    src: "/airlines/japan-airlines.svg",
+    width: 385,
+    height: 90,
+  },
+  {
+    name: "ANA",
+    src: "/airlines/ana.svg",
+    width: 1000,
+    height: 95,
+  },
+  {
+    name: "Lufthansa",
+    src: "/airlines/lufthansa.svg",
+    width: 512,
+    height: 90,
+  },
+  {
+    name: "Thai Airways",
+    src: "/airlines/thai-airways.svg",
+    width: 512,
+    height: 150,
+  },
+  {
+    name: "Malaysia Airlines",
+    src: "/airlines/malaysia-airlines.svg",
+    width: 403,
+    height: 100,
+  },
+  {
+    name: "British Airways",
+    src: "/airlines/british-airways.svg",
+    width: 207,
+    height: 19,
+  },
+  {
+    name: "Air France",
+    src: "/airlines/air-france.svg",
+    width: 189,
+    height: 18,
+  },
+  {
+    name: "KLM",
+    src: "/airlines/klm.svg",
+    width: 350,
+    height: 204,
+  },
+  {
+    name: "Delta Air Lines",
+    src: "/airlines/delta.svg",
+    width: 512,
+    height: 79,
+  },
+  {
+    name: "United Airlines",
+    src: "/airlines/united-airlines.svg",
+    width: 464,
+    height: 88,
+  },
+  {
+    name: "Qantas",
+    src: "/airlines/qantas.svg",
+    width: 125,
+    height: 26,
   },
 ];
 
@@ -265,30 +408,17 @@ function AirlineBand() {
           </p>
         </div>
 
-        <div className="logo-rail mt-11 border-y border-line bg-line">
-          <ul className="grid grid-cols-2 gap-px md:grid-cols-3 xl:grid-cols-6">
-            {airlines.map((airline) => (
-              <li
-                className="logo-cell group flex min-h-36 flex-col items-center justify-center gap-3 px-4 py-7 sm:px-6"
-                data-airline-logo={airline.name}
-                key={airline.name}
-              >
-                <span aria-hidden="true" className="airline-logo-frame">
-                  <Image
-                    alt=""
-                    className={`airline-logo-image ${airline.logoClass}`}
-                    height={airline.height}
-                    src={airline.src}
-                    unoptimized
-                    width={airline.width}
-                  />
-                </span>
-                <span className="text-center font-mono text-[10px] font-semibold uppercase tracking-[0.11em] text-muted transition-colors duration-200 group-hover:text-ink">
-                  {airline.name}
-                </span>
-              </li>
-            ))}
-          </ul>
+        <div className="mt-12 space-y-10">
+          <AirlineCarousel
+            airlines={localAirlines}
+            category="local"
+            heading="Local airlines"
+          />
+          <AirlineCarousel
+            airlines={internationalAirlines}
+            category="international"
+            heading="International airlines"
+          />
         </div>
         <p className="mt-4 text-xs leading-5 text-muted">
           Logos are shown for airline identification only.

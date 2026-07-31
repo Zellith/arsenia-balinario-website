@@ -73,11 +73,65 @@ assert.ok(
   "The retired flyer must not be rendered as an image",
 );
 
+const expectedAirlines = [
+  "Philippine Airlines",
+  "Cebu Pacific",
+  "AirAsia",
+  "Sunlight Air",
+  "SKY express",
+  "Philippine Airlines Express",
+  "PAL Express",
+  "AirSWIFT",
+  "SEAir",
+  "Cebgo",
+  "Singapore Airlines",
+  "Emirates",
+  "Qatar Airways",
+  "Cathay Pacific",
+  "Etihad Airways",
+  "Turkish Airlines",
+  "EVA Air",
+  "Korean Air",
+  "China Airlines",
+  "Japan Airlines",
+  "ANA",
+  "Lufthansa",
+  "Thai Airways",
+  "Malaysia Airlines",
+  "British Airways",
+  "Air France",
+  "KLM",
+  "Delta Air Lines",
+  "United Airlines",
+  "Qantas",
+];
+
 const airlineLogos = html.match(/data-airline-logo=/g) ?? [];
-assert.ok(
-  airlineLogos.length >= 6,
-  "Expected at least six recognizable airline logo treatments",
+assert.equal(
+  airlineLogos.length,
+  expectedAirlines.length,
+  "Expected every airline logo from the supplied poster",
 );
+
+for (const airline of expectedAirlines) {
+  assert.ok(
+    html.includes(`data-airline-logo="${airline}"`),
+    `Missing poster airline: ${airline}`,
+  );
+}
+
+for (const category of ["local", "international"]) {
+  assert.ok(
+    html.includes(`data-airline-carousel="${category}"`),
+    `Missing ${category} airline carousel`,
+  );
+  for (const direction of ["Previous", "Next"]) {
+    assert.ok(
+      html.includes(`aria-label="${direction} ${category} airlines"`),
+      `Missing ${direction.toLowerCase()} control for ${category} airlines`,
+    );
+  }
+}
 
 for (const airlineAsset of [
   "/airlines/philippine-airlines.svg",
@@ -86,6 +140,29 @@ for (const airlineAsset of [
   "/airlines/singapore-airlines.svg",
   "/airlines/emirates.svg",
   "/airlines/qatar-airways.svg",
+  "/airlines/sunlight-air.png",
+  "/airlines/sky-express.svg",
+  "/airlines/pal-express.svg",
+  "/airlines/airswift.png",
+  "/airlines/seair.png",
+  "/airlines/cebgo.svg",
+  "/airlines/cathay-pacific.svg",
+  "/airlines/etihad-airways.svg",
+  "/airlines/turkish-airlines.svg",
+  "/airlines/eva-air.svg",
+  "/airlines/korean-air.svg",
+  "/airlines/china-airlines.png",
+  "/airlines/japan-airlines.svg",
+  "/airlines/ana.svg",
+  "/airlines/lufthansa.svg",
+  "/airlines/thai-airways.svg",
+  "/airlines/malaysia-airlines.svg",
+  "/airlines/british-airways.svg",
+  "/airlines/air-france.svg",
+  "/airlines/klm.svg",
+  "/airlines/delta.svg",
+  "/airlines/united-airlines.svg",
+  "/airlines/qantas.svg",
 ]) {
   assert.ok(
     html.includes(airlineAsset),

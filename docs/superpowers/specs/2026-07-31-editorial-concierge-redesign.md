@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved visual direction: **Direction A — Editorial concierge**, revised with the **SkyBound Travel Hub** agency identity, a recognizable airline-logo rail, and restrained motion.
+Approved visual direction: **Direction A — Editorial concierge**, revised with the **SkyBound Travel Hub** agency identity, full Local and International airline carousels, and restrained motion.
 
 ## Objective
 
@@ -29,7 +29,7 @@ The redesign must make three things immediately clear:
 flowchart TD
     A[Minimal SkyBound header] --> B[Hero: promise, CTA, Arsenia portrait]
     B --> C[Three-part trust strip]
-    C --> D[Recognizable airline logo rail]
+    C --> D[Local + international airline carousels]
     D --> E[Trip brief + concise supporting copy]
     E --> F[How it works: three spacious steps]
     F --> G[Dark closing CTA]
@@ -62,8 +62,10 @@ flowchart TD
 ### 4. Airline Coverage Band
 
 - Give airline coverage its own compact, full-width section.
-- Use a curated six-mark logo rail with generous spacing: Philippine Airlines, Cebu Pacific, AirAsia, Singapore Airlines, Emirates, and Qatar Airways.
-- Use locally hosted, full-color vector marks from official-origin Wikimedia Commons files; do not redraw airline identities or crop them from the low-resolution poster.
+- Include all 30 airline marks shown on the supplied poster: 10 local and 20 international.
+- Present them as two categorized, user-controlled carousels—**Local airlines** and **International airlines**—with previous/next controls, touch swiping, native horizontal scrolling, and keyboard support.
+- Do not autoplay or create a continuously moving marquee. Motion occurs only when the visitor navigates.
+- Use locally hosted, full-color vector or high-resolution transparent marks from official-origin or established airline-logo sources; do not redraw airline identities or crop them from the low-resolution poster.
 - Pair each mark with accessible airline naming and the label **“Airlines frequently requested.”**
 - State that availability depends on route and schedule. Do not imply endorsement or partnership.
 - This section establishes breadth; it must not repeat the flyer or explain the booking process.
@@ -127,7 +129,7 @@ flowchart TD
 ### Imagery and Marks
 
 - Hero portrait: generated from the supplied reference with identity preserved, background removed or replaced with a subtle neutral editorial treatment, and the missing shoulder naturally reconstructed.
-- Airline marks: presented at a consistent optical scale inside open cells with restrained separators.
+- Airline marks: presented at a consistent optical scale inside scroll-snapped cells with restrained separators.
 - The portrait must not be stretched, over-cropped, or masked to hide obvious generation/cropping defects.
 
 ### Motion
@@ -161,7 +163,7 @@ flowchart TD
 - The page uses one coherent spacing and typography system from hero through footer.
 - Arsenia's portrait has no visibly missing shoulder, poster bleed, harsh mask edge, or improvised crop.
 - SkyBound Travel Hub appears consistently in the header, portrait caption, metadata, and footer; the former agency name does not render.
-- At least six airline marks are recognizable, accessible, and optically balanced without implying a partnership.
+- All 30 poster airline entries are recognizable, accessible, optically balanced, and grouped into Local and International carousels without implying a partnership.
 - The trip brief does not make a fare or availability claim and does not label itself as an example or illustration.
 - Motion is subtle, non-looping, and effectively disabled when reduced motion is requested.
 - Messenger is the only primary CTA and works from every placement.
@@ -174,4 +176,4 @@ flowchart TD
 
 - No booking form, scheduler, quote calculator, account, or backend.
 - No fabricated testimonials, response-time guarantees, or airline partnerships.
-- No new visual framework, animation library, continuously moving logo marquee, or unrelated refactor.
+- No new visual framework, animation library, autoplaying logo marquee, or unrelated refactor.

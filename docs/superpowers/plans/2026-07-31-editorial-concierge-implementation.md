@@ -4,9 +4,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Rebuild the Arsenia Messenger landing page as the approved Direction A editorial-concierge experience, then apply the approved SkyBound Travel Hub identity, airline-logo rail, and subtle motion refinement.
+**Goal:** Rebuild the Arsenia Messenger landing page as the approved Direction A editorial-concierge experience, then apply the approved SkyBound Travel Hub identity, full airline carousels, and subtle motion refinement.
 
-**Architecture:** Keep the site as a static Next.js App Router page with local, named server components inside `src/app/page.tsx`; no client-side state or new runtime dependencies are needed. Centralize the visual and motion systems in `src/app/globals.css`, render verified airline marks from dedicated local vector assets, and gate the generated portrait through image inspection before it is referenced by the page.
+**Architecture:** Keep the site as a statically generated Next.js App Router page with local, named server components inside `src/app/page.tsx` and one focused client component for carousel controls and scroll state. Add no runtime dependencies. Centralize the visual and motion systems in `src/app/globals.css`, render verified airline marks from dedicated local vector or high-resolution raster assets, and gate the generated portrait through image inspection before it is referenced by the page.
 
 **Tech Stack:** Next.js 16, React 19, TypeScript, Tailwind CSS 4, `next/image`, Node's built-in runtime for the landing-page contract check, built-in image generation for the portrait edit, temporary Playwright CLI for screenshots only.
 
@@ -19,7 +19,7 @@
 - Use the approved section order: header → hero → trust strip → airline logo band → trip brief → how it works → closing CTA → footer.
 - Messenger blue is the only interactive accent; phone and email are footer fallbacks.
 - Add no UI framework, animation package, booking form, scheduler, backend, testimonial, or fabricated airline partnership.
-- Use six accessible airline marks, label them as frequently requested, and pair the section with an availability caveat.
+- Use all 30 accessible airline marks from the supplied poster, grouped into user-controlled Local and International carousels, and pair the section with an availability caveat.
 - Motion is CSS-only, non-looping, limited to opacity/transform, and neutralized by the existing reduced-motion rule.
 - Preserve the accessibility skip link, focus states, and reduced-motion handling.
 - Do not discard or overwrite unrelated working-tree changes.
@@ -30,7 +30,7 @@
 - Create `scripts/verify-landing-page.mjs`: dependency-free rendered-content contract check.
 - Modify `package.json`: expose the contract check as `npm run verify:landing`.
 - Rewrite `src/app/page.tsx`: named section components, SkyBound copy, airline marks, trip brief, and approved content hierarchy.
-- Create `public/airlines/*.svg`: dedicated full-color airline marks with source provenance recorded in `docs/airline-logo-sources.md`.
+- Create `public/airlines/*`: dedicated full-color airline marks with source provenance recorded in `docs/airline-logo-sources.md`.
 - Modify `src/app/globals.css`: centralized Direction A tokens, optical logo sizing, and restrained motion behavior.
 - Modify `src/app/layout.tsx`: metadata copy only if needed to match the approved message.
 
@@ -293,7 +293,7 @@ git commit -m "fix: polish responsive landing page composition"
 
 - [ ] **Step 1: Extend the rendered contract and confirm RED**
 
-Require `SkyBound Travel Hub`, six `data-airline-logo` markers, `Airlines frequently requested`, `Trip brief`, and `data-motion="subtle"`; reject rendered `Global Pinoy Travel` text and redundant example/illustrative qualifiers.
+Require `SkyBound Travel Hub`, the initial six `data-airline-logo` markers, `Airlines frequently requested`, `Trip brief`, and `data-motion="subtle"`; reject rendered `Global Pinoy Travel` text and redundant example/illustrative qualifiers. Task 6 supersedes this initial logo-count contract with the full poster inventory.
 
 - [ ] **Step 2: Replace the agency identity and metadata**
 
@@ -301,7 +301,7 @@ Update the header lockup, portrait caption, footer, document title, description,
 
 - [ ] **Step 3: Upgrade the airline band**
 
-Render six accessible, recognizable marks at a consistent optical size using crops from the supplied poster as the local source image. Keep the section open and divider-led rather than card-heavy.
+Render the initial six accessible, recognizable marks at a consistent optical size using dedicated local assets. Keep the section open and divider-led rather than card-heavy; Task 6 expands this rail to every poster entry.
 
 - [ ] **Step 4: Replace the old-branded proof panel**
 
@@ -314,3 +314,29 @@ Add one staggered hero entrance and small logo/link interactions using CSS opaci
 - [ ] **Step 6: Verify and visually inspect**
 
 Run the rendered contract, lint, production build, production audit, accessibility scan, and screenshot inspection at 375px, 768px, and 1440px.
+
+### Task 6: Expand the Airline Band to the Full Poster Inventory
+
+**Files:**
+- Create: `src/app/airline-carousel.tsx`
+- Modify: `src/app/page.tsx`
+- Modify: `src/app/globals.css`
+- Modify: `scripts/verify-landing-page.mjs`
+- Add: `public/airlines/*`
+- Modify: `docs/airline-logo-sources.md`
+
+- [ ] **Step 1: Extend the rendered contract and confirm RED**
+
+Require exactly 30 `data-airline-logo` markers, both category carousels, all poster airline names, and accessible previous/next controls.
+
+- [ ] **Step 2: Add every locally hosted logo asset**
+
+Use vectors where available and high-resolution transparent raster files for the few regional or legacy marks without a clean vector source. Record provenance and keep all runtime requests local.
+
+- [ ] **Step 3: Implement the two categorized carousels**
+
+Add a small client component with scroll-snap tracks, previous/next buttons, swipe/native scrolling, and left/right keyboard navigation. Do not autoplay or loop continuously.
+
+- [ ] **Step 4: Verify and visually inspect**
+
+Run the contract, lint, TypeScript, production build, audit, accessibility scans, and responsive screenshots at 375px, 768px, and 1440px.

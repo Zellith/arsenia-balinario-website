@@ -51,6 +51,14 @@ assert.ok(
   "Expected at least four Messenger conversion links",
 );
 assert.ok(
+  html.includes('aria-label="Message Arsenia on Messenger"'),
+  "Expected the sticky header to expose a mobile Messenger action",
+);
+assert.ok(
+  html.includes("30 airlines · local and international"),
+  "Expected the hero airline-breadth anchor",
+);
+assert.ok(
   !html.includes("Usually replies within the hour"),
   "Unverified response-time claim must be removed",
 );
@@ -124,17 +132,40 @@ for (const airline of expectedAirlines) {
   );
 }
 
+assert.ok(
+  html.includes('data-airline-carousel="segmented"'),
+  "Expected one segmented airline carousel",
+);
+assert.ok(
+  !html.includes("data-autoplay"),
+  "Airline motion must not use autoplay",
+);
+assert.ok(
+  /<canvas[^>]+aria-hidden="true"[^>]+data-atmosphere-canvas=/i.test(html),
+  "Expected decorative atmosphere canvases to be hidden from accessibility APIs",
+);
+assert.equal(
+  (html.match(/data-atmosphere-canvas=/g) ?? []).length,
+  2,
+  "Expected exactly the hero and closing atmosphere canvases",
+);
+assert.ok(
+  html.includes("data-flight-path="),
+  "Expected the one-shot trip flight path",
+);
+
 for (const category of ["local", "international"]) {
   assert.ok(
-    html.includes(`data-airline-carousel="${category}"`),
-    `Missing ${category} airline carousel`,
+    html.includes(`data-airline-category="${category}"`),
+    `Missing ${category} airline category panel`,
   );
-  for (const direction of ["Previous", "Next"]) {
-    assert.ok(
-      html.includes(`aria-label="${direction} ${category} airlines"`),
-      `Missing ${direction.toLowerCase()} control for ${category} airlines`,
-    );
-  }
+}
+
+for (const direction of ["Previous", "Next"]) {
+  assert.ok(
+    html.includes(`aria-label="${direction} local airlines"`),
+    `Missing initial ${direction.toLowerCase()} airline control`,
+  );
 }
 
 for (const airlineAsset of [

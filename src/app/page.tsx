@@ -1,8 +1,25 @@
 import Image from "next/image";
 
 import { AirlineCarousel, type AirlineLogo } from "./airline-carousel";
+import { AtmosphereCanvas } from "./atmosphere-canvas";
+import { FlightPath } from "./flight-path";
+import { ScrollReveal } from "./scroll-reveal";
+import { heroFragmentShader } from "./shaders/hero.frag";
+import { nightFragmentShader } from "./shaders/night.frag";
 
 const messengerUrl = "https://m.me/arsenia.balinario";
+
+const travelAgencyJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TravelAgency",
+  name: "SkyBound Travel Hub",
+  description:
+    "Personal assistance with local and international flight options through Messenger.",
+  email: "mailto:amb.grab042364@gmail.com",
+  telephone: ["+639665891165", "+639434106825"],
+  areaServed: ["Philippines", "International"],
+  sameAs: [messengerUrl],
+};
 
 const trustItems = [
   {
@@ -244,22 +261,6 @@ function MessengerIcon({ className = "h-5 w-5" }: Readonly<{ className?: string 
   );
 }
 
-function PlaneIcon({ className = "h-5 w-5" }: Readonly<{ className?: string }>) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="m3.5 13.25 7.4-2.05 3.57-7.04c.22-.43.67-.7 1.15-.7h.3c.52 0 .9.5.76 1l-1.72 6.01 4.73-1.31c.78-.22 1.59.13 1.98.84.45.84.11 1.88-.75 2.28l-5.15 2.41.9 4.94c.09.5-.3.96-.8.96h-.35c-.42 0-.81-.2-1.05-.55l-2.97-4.31-4.35 2.03-1.53 1.89c-.23.28-.57.44-.93.44h-.17c-.43 0-.74-.42-.61-.83l.9-2.82-2.02-1.8c-.47-.42-.04-1.18.58-1.01Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
 function MessengerLink({
   children,
   className = "",
@@ -301,9 +302,18 @@ function BrandLockup() {
 
 function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line/90 bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-line-soft bg-paper/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-5 px-5 sm:px-8 lg:px-10">
         <BrandLockup />
+        <a
+          aria-label="Message Arsenia on Messenger"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-messenger text-white shadow-[0_1px_2px_rgba(10,32,52,.12),0_8px_22px_rgba(27,116,228,.2)] transition-colors hover:bg-messenger-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-messenger focus-visible:ring-offset-2 sm:hidden"
+          href={messengerUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <MessengerIcon className="h-5.5 w-5.5" />
+        </a>
         <a
           className="hidden min-h-11 items-center gap-2 text-sm font-semibold text-messenger underline-offset-4 transition-colors hover:text-messenger-hover hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-messenger focus-visible:ring-offset-4 sm:inline-flex"
           href={messengerUrl}
@@ -320,13 +330,18 @@ function SiteHeader() {
 
 function HeroSection() {
   return (
-    <section className="bg-paper" data-section="hero">
-      <div className="mx-auto grid max-w-[1200px] items-center gap-14 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:px-10 lg:py-28 xl:gap-24">
+    <section className="hero-atmosphere bg-paper" data-section="hero">
+      <AtmosphereCanvas
+        activationMedia="(min-width: 1024px)"
+        fragmentShader={heroFragmentShader}
+        framesPerSecond={30}
+      />
+      <div className="relative mx-auto grid max-w-[1200px] items-center gap-14 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:px-10 lg:py-28 xl:gap-24">
         <div className="max-w-[42rem]">
           <p className="hero-reveal hero-reveal-1 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted">
             Personal flight assistance
           </p>
-          <h1 className="hero-reveal hero-reveal-2 mt-6 text-balance text-[clamp(3rem,6vw,4.8rem)] font-semibold leading-[0.99] tracking-[-0.055em] text-ink">
+          <h1 className="hero-reveal hero-reveal-2 mt-6 text-balance text-[clamp(3rem,6vw,4.8rem)] font-medium leading-[0.99] tracking-[-0.05em] text-ink">
             A simpler, more personal way to book your next flight.
           </h1>
           <p className="hero-reveal hero-reveal-3 mt-7 max-w-[36rem] text-pretty text-lg leading-8 text-muted sm:text-xl sm:leading-9">
@@ -334,16 +349,20 @@ function HeroSection() {
             options, fare questions, and clear booking guidance—all in
             Messenger.
           </p>
-          <div className="hero-reveal hero-reveal-4 mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+          <div className="hero-reveal hero-reveal-4 mt-9 flex flex-col items-start">
             <MessengerLink>Chat with Arsenia on Messenger</MessengerLink>
-            <p className="max-w-[14rem] text-sm leading-6 text-muted">
+            <p className="mt-4 max-w-none text-sm leading-6 text-muted">
               No forms. No signup. Start with a simple message.
             </p>
+            <div className="mt-14 flex items-center gap-3 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted sm:mt-16">
+              <span aria-hidden="true" className="h-px w-8 bg-brass" />
+              <span>30 airlines · local and international</span>
+            </div>
           </div>
         </div>
 
         <figure className="portrait-reveal w-full max-w-[29rem] justify-self-center lg:justify-self-end">
-          <div className="portrait-frame relative overflow-hidden rounded-[1.25rem] border border-line bg-mist p-3 shadow-[0_22px_60px_rgba(10,32,52,.1)] sm:p-4">
+          <div className="portrait-frame relative overflow-hidden rounded-[1.25rem] border border-line bg-mist p-3 shadow-[var(--shadow-lift)] sm:p-4">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[.9rem] bg-[#d8d3ca]">
               <Image
                 alt="Arsenia, travel consultant for SkyBound Travel Hub"
@@ -351,11 +370,11 @@ function HeroSection() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 90vw, 460px"
-                src="/arsenia-portrait-editorial.png"
+                src="/arsenia-portrait-editorial.webp"
               />
             </div>
           </div>
-          <figcaption className="mt-4 flex items-start justify-between gap-5 border-t border-line pt-4">
+          <figcaption className="human-voice mt-4 flex items-start justify-between gap-5 border-t border-line-soft pt-4">
             <span className="text-sm font-semibold text-ink">Arsenia</span>
             <span className="max-w-[16rem] text-right text-sm leading-6 text-muted">
               Personal flight assistance with SkyBound Travel Hub
@@ -369,21 +388,26 @@ function HeroSection() {
 
 function TrustStrip() {
   return (
-    <section className="border-y border-line bg-surface" data-section="trust">
-      <div className="mx-auto grid max-w-[1200px] divide-y divide-line px-5 py-3 sm:px-8 md:grid-cols-3 md:divide-x md:divide-y-0 lg:px-10">
-        {trustItems.map((item) => (
-          <article
-            className="py-7 md:px-7 md:py-8 first:md:pl-0 last:md:pr-0"
-            key={item.label}
-          >
-            <h2 className="text-base font-semibold tracking-[-0.015em] text-ink">
-              {item.label}
-            </h2>
-            <p className="mt-2 max-w-[20rem] text-sm leading-6 text-muted">
-              {item.text}
-            </p>
-          </article>
-        ))}
+    <section className="bg-paper py-4 sm:py-5" data-section="trust">
+      <div className="border-y border-line-soft bg-surface">
+        <div className="mx-auto grid max-w-[1200px] divide-y divide-line-soft px-5 sm:px-8 md:grid-cols-3 md:divide-x md:divide-y-0 lg:px-10">
+          {trustItems.map((item) => (
+            <article
+              className="py-8 md:px-7 md:py-10 first:md:pl-0 last:md:pr-0"
+              key={item.label}
+            >
+              <div className="flex items-center gap-3">
+                <span aria-hidden="true" className="h-px w-6 bg-brass" />
+                <h2 className="text-lg font-semibold tracking-[-0.02em] text-ink">
+                  {item.label}
+                </h2>
+              </div>
+              <p className="mt-3 max-w-[20rem] text-sm leading-6 text-muted">
+                {item.text}
+              </p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -394,32 +418,38 @@ function AirlineBand() {
     <section className="bg-surface" data-section="airlines">
       <div className="mx-auto max-w-[1200px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+          <ScrollReveal variant="rule">
             <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted">
               Airlines frequently requested
             </p>
-            <h2 className="mt-4 max-w-[26rem] text-3xl font-semibold leading-tight tracking-[-0.035em] text-ink sm:text-4xl">
+            <h2 className="mt-4 max-w-[26rem] text-3xl font-medium leading-tight tracking-[-0.04em] text-ink sm:text-4xl">
               Familiar airlines. One direct conversation.
             </h2>
-          </div>
-          <p className="max-w-[32rem] text-base leading-7 text-muted sm:text-lg sm:leading-8">
-            Ask Arsenia about local and international options. Your choices
-            will depend on the route, dates, and current airline schedule.
-          </p>
+          </ScrollReveal>
+          <ScrollReveal delay={90} variant="rise">
+            <p className="max-w-[32rem] text-base leading-7 text-muted sm:text-lg sm:leading-8">
+              Ask Arsenia about local and international options. Your choices
+              will depend on the route, dates, and current airline schedule.
+            </p>
+          </ScrollReveal>
         </div>
 
-        <div className="mt-12 space-y-10">
+        <ScrollReveal className="mt-12" delay={90} variant="rise">
           <AirlineCarousel
-            airlines={localAirlines}
-            category="local"
-            heading="Local airlines"
+            groups={[
+              {
+                airlines: localAirlines,
+                category: "local",
+                label: "Local",
+              },
+              {
+                airlines: internationalAirlines,
+                category: "international",
+                label: "International",
+              },
+            ]}
           />
-          <AirlineCarousel
-            airlines={internationalAirlines}
-            category="international"
-            heading="International airlines"
-          />
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -429,69 +459,67 @@ function ProofSection() {
   return (
     <section className="bg-mist" data-section="proof">
       <div className="mx-auto grid max-w-[1200px] items-center gap-16 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:px-10 lg:py-28 xl:gap-28">
-        <figure className="trip-brief w-full max-w-[38rem]">
-          <div className="border-b border-line pb-5">
-            <div>
-              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
-                SkyBound Travel Hub
-              </p>
-              <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-ink">
-                Trip brief
-              </h3>
+        <ScrollReveal className="w-full max-w-[38rem]" variant="card">
+          <figure className="trip-brief w-full">
+            <div className="border-b border-line pb-5">
+              <div>
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
+                  SkyBound Travel Hub
+                </p>
+                <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-ink">
+                  Trip brief
+                </h3>
+              </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-5 py-9 sm:gap-8 sm:py-11">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                From
-              </p>
-              <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-ink sm:text-5xl">
-                CEB
-              </p>
-              <p className="mt-2 text-sm text-muted">Cebu</p>
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-5 py-9 sm:gap-8 sm:py-11">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                  From
+                </p>
+                <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-ink sm:text-5xl">
+                  CEB
+                </p>
+                <p className="mt-2 text-sm text-muted">Cebu</p>
+              </div>
+              <FlightPath />
+              <div className="text-right">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                  To
+                </p>
+                <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-ink sm:text-5xl">
+                  SIN
+                </p>
+                <p className="mt-2 text-sm text-muted">Singapore</p>
+              </div>
             </div>
-            <div className="trip-route" aria-hidden="true">
-              <span />
-              <PlaneIcon className="h-6 w-6" />
-              <span />
-            </div>
-            <div className="text-right">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                To
-              </p>
-              <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-ink sm:text-5xl">
-                SIN
-              </p>
-              <p className="mt-2 text-sm text-muted">Singapore</p>
-            </div>
-          </div>
 
-          <dl className="grid gap-px border-y border-line bg-line sm:grid-cols-2">
-            <div className="bg-white px-5 py-5 sm:px-6">
-              <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-                Travel window
-              </dt>
-              <dd className="mt-2 text-base font-semibold text-ink">
-                Flexible dates in August
-              </dd>
-            </div>
-            <div className="bg-white px-5 py-5 sm:px-6">
-              <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-                Travellers
-              </dt>
-              <dd className="mt-2 text-base font-semibold text-ink">
-                2 adults
-              </dd>
-            </div>
-          </dl>
-        </figure>
+            <dl className="grid gap-px border-y border-line bg-line-soft sm:grid-cols-2">
+              <div className="bg-white px-5 py-5 sm:px-6">
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                  Travel window
+                </dt>
+                <dd className="mt-2 text-base font-semibold text-ink">
+                  Flexible dates in August
+                </dd>
+              </div>
+              <div className="bg-white px-5 py-5 sm:px-6">
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                  Travellers
+                </dt>
+                <dd className="mt-2 text-base font-semibold text-ink">
+                  2 adults
+                </dd>
+              </div>
+            </dl>
+          </figure>
+        </ScrollReveal>
 
-        <div className="max-w-[38rem]">
+        <ScrollReveal className="max-w-[38rem]" variant="route">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted">
             A clear first message
           </p>
-          <h2 className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.045em] text-ink sm:text-5xl lg:text-[3.5rem]">
+          <h2 className="mt-5 text-balance text-4xl font-medium leading-[1.05] tracking-[-0.04em] text-ink sm:text-5xl lg:text-[3.5rem]">
             Start with the essentials. We’ll take it from there.
           </h2>
           <div className="mt-7 space-y-5 text-lg leading-8 text-muted">
@@ -513,7 +541,7 @@ function ProofSection() {
             Start a Messenger chat
             <span className="text-link-arrow" aria-hidden="true">→</span>
           </a>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -523,27 +551,29 @@ function ProcessSection() {
   return (
     <section className="bg-paper" data-section="process">
       <div className="mx-auto max-w-[1200px] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-        <div className="max-w-[44rem]">
+        <ScrollReveal className="max-w-[44rem]" variant="rule">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted">
             What happens next
           </p>
-          <h2 className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.045em] text-ink sm:text-5xl lg:text-[3.5rem]">
+          <h2 className="mt-5 text-balance text-4xl font-medium leading-[1.05] tracking-[-0.04em] text-ink sm:text-5xl lg:text-[3.5rem]">
             Three clear steps. One conversation.
           </h2>
-        </div>
+        </ScrollReveal>
 
-        <ol className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-16 lg:gap-12">
-          {processSteps.map((step) => (
-            <li className="border-t border-line pt-6" key={step.number}>
-              <span className="font-mono text-sm font-semibold text-muted">
-                {step.number}
-              </span>
-              <h3 className="mt-8 text-2xl font-semibold tracking-[-0.035em] text-ink">
-                {step.title}
-              </h3>
-              <p className="mt-4 max-w-[20rem] text-base leading-7 text-muted sm:text-lg sm:leading-8">
-                {step.text}
-              </p>
+        <ol className="process-timeline mt-14 md:grid md:grid-cols-3 md:gap-8 lg:mt-16 lg:gap-12">
+          {processSteps.map((step, index) => (
+            <li className="process-step" key={step.number}>
+              <ScrollReveal delay={index * 90} variant="checkpoint">
+                <span className="process-step-number">
+                  {step.number}
+                </span>
+                <h3 className="mt-4 text-xl font-semibold tracking-[-0.025em] text-ink">
+                  {step.title}
+                </h3>
+                <p className="mt-4 max-w-[20rem] text-base leading-7 text-muted sm:text-lg sm:leading-8">
+                  {step.text}
+                </p>
+              </ScrollReveal>
             </li>
           ))}
         </ol>
@@ -554,29 +584,39 @@ function ProcessSection() {
 
 function ClosingSection() {
   return (
-    <section className="bg-night text-white" data-section="closing">
-      <div className="mx-auto grid max-w-[1200px] gap-12 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.1fr_.9fr] lg:items-end lg:gap-20 lg:px-10 lg:py-28">
-        <div>
+    <section
+      className="closing-section closing-atmosphere text-white"
+      data-section="closing"
+    >
+      <AtmosphereCanvas
+        activationMedia="(min-width: 1024px)"
+        fragmentShader={nightFragmentShader}
+        framesPerSecond={24}
+      />
+      <div className="relative mx-auto grid max-w-[1200px] gap-12 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:gap-20 lg:px-10 lg:py-28">
+        <ScrollReveal variant="rule">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
             Ready when you are
           </p>
-          <h2 className="mt-5 max-w-[44rem] text-balance text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-5xl lg:text-[3.5rem]">
+          <h2 className="mt-5 max-w-[44rem] text-balance text-4xl font-medium leading-[1.04] tracking-[-0.04em] sm:text-5xl lg:text-[3.5rem]">
             Tell Arsenia where you’d like to go.
           </h2>
           <p className="mt-6 max-w-[37rem] text-lg leading-8 text-slate-300">
             Start with your route, dates, and passenger count. Arsenia can help
             you understand the available options from there.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="lg:justify-self-end">
-          <blockquote className="max-w-[31rem] border-l border-slate-600 pl-5 text-lg leading-8 text-slate-200">
-            “Hi Arsenia, can you check flights from Cebu to Singapore for two
-            people in August?”
-          </blockquote>
-          <MessengerLink className="mt-8">
-            Chat with Arsenia on Messenger
-          </MessengerLink>
+          <ScrollReveal variant="message">
+            <blockquote className="human-voice max-w-[31rem] rounded-[1.25rem_1.25rem_1.25rem_.25rem] bg-white/[.06] px-6 py-5 text-xl leading-8 text-slate-200">
+              “Hi Arsenia, can you check flights from Cebu to Singapore for two
+              people in August?”
+            </blockquote>
+          </ScrollReveal>
+          <ScrollReveal className="mt-8" delay={90} variant="rise">
+            <MessengerLink>Chat with Arsenia on Messenger</MessengerLink>
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -630,6 +670,12 @@ function SiteFooter() {
 export default function Home() {
   return (
     <>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(travelAgencyJsonLd).replace(/</g, "\\u003c"),
+        }}
+        type="application/ld+json"
+      />
       <a
         className="sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:not-sr-only focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink focus:shadow-lg"
         href="#main-content"

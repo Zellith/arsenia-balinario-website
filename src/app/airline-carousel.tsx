@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import {
-  type FocusEvent,
   type KeyboardEvent,
   useCallback,
   useEffect,
@@ -10,7 +9,10 @@ import {
   useState,
 } from "react";
 
-import { getNextCarouselScrollLeft } from "./airline-carousel-motion";
+import {
+  easeOutCubic,
+  getIntroCarouselScrollLeft,
+} from "./airline-carousel-motion";
 
 export type AirlineLogo = {
   name: string;
@@ -19,13 +21,19 @@ export type AirlineLogo = {
   height: number;
 };
 
-type AirlineCarouselProps = {
+type AirlineCategory = "local" | "international";
+
+export type AirlineGroup = {
   airlines: AirlineLogo[];
-  category: "local" | "international";
-  heading: string;
+  category: AirlineCategory;
+  label: string;
 };
 
-const AUTOPLAY_DELAY_MS = 2_800;
+type AirlineCarouselProps = {
+  groups: AirlineGroup[];
+};
+
+const INTRO_DRIFT_DURATION_MS = 900;
 
 function ArrowIcon({ direction }: Readonly<{ direction: "left" | "right" }>) {
   return (
@@ -41,120 +49,208 @@ function ArrowIcon({ direction }: Readonly<{ direction: "left" | "right" }>) {
   );
 }
 
-export function AirlineCarousel({
-  airlines,
-  category,
-  heading,
-}: Readonly<AirlineCarouselProps>) {
-  const trackRef = useRef<HTMLUListElement>(null);
-  const interactionRef = useRef({ hasFocus: false, isHovered: false });
+export function AirlineCarousel({ groups }: Readonly<AirlineCarouselProps>) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const tracksRef = useRef<Record<AirlineCategory, HTMLUListElement | null>>({
+    international: null,
+    local: null,
+  });
+  const tabsRef = useRef<Record<AirlineCategory, HTMLButtonElement | null>>({
+    international: null,
+    local: null,
+  });
+  const introHasRunRef = useRef(false);
+  const animationFrameRef = useRef<number | null>(null);
+  const [activeCategory, setActiveCategory] =
+    useState<AirlineCategory>("local");
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
+  const activeGroup =
+    groups.find((group) => group.category === activeCategory) ?? groups[0];
+  const airlineCount = groups.reduce(
+    (count, group) => count + group.airlines.length,
+    0,
+  );
+
   const updateControlState = useCallback(() => {
-    const track = trackRef.current;
+    const track = tracksRef.current[activeCategory];
 
     if (!track) return;
 
     const maxScrollLeft = track.scrollWidth - track.clientWidth;
     setAtStart(track.scrollLeft <= 2);
     setAtEnd(maxScrollLeft <= 2 || track.scrollLeft >= maxScrollLeft - 2);
-  }, []);
+  }, [activeCategory]);
 
   useEffect(() => {
+    const track = tracksRef.current[activeCategory];
+
+    track?.scrollTo({ behavior: "auto", left: 0 });
     updateControlState();
     window.addEventListener("resize", updateControlState);
 
     return () => window.removeEventListener("resize", updateControlState);
-  }, [updateControlState]);
+  }, [activeCategory, updateControlState]);
 
   useEffect(() => {
-    const track = trackRef.current;
+    const root = rootRef.current;
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
 
-    if (!track || reducedMotion.matches) return;
+    if (
+      !root ||
+      reducedMotion.matches ||
+      typeof IntersectionObserver === "undefined"
+    ) {
+      return;
+    }
 
-    const intervalId = window.setInterval(() => {
-      const { hasFocus, isHovered } = interactionRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || introHasRunRef.current) return;
 
-      if (hasFocus || isHovered || document.hidden) return;
+        const track = tracksRef.current.local;
+        const firstCell = track?.firstElementChild as HTMLElement | null;
 
-      const maxScrollLeft = track.scrollWidth - track.clientWidth;
-      const scrollStep = Math.max(track.clientWidth * 0.82, 240);
-      const nextScrollLeft = getNextCarouselScrollLeft(
-        track.scrollLeft,
-        maxScrollLeft,
-        scrollStep,
-      );
+        introHasRunRef.current = true;
+        observer.disconnect();
 
-      track.scrollTo({
-        behavior: nextScrollLeft === 0 ? "auto" : "smooth",
-        left: nextScrollLeft,
+        if (!track || !firstCell) return;
+
+        const start = track.scrollLeft;
+        const maxScrollLeft = track.scrollWidth - track.clientWidth;
+        const target = getIntroCarouselScrollLeft(
+          start,
+          maxScrollLeft,
+          firstCell.getBoundingClientRect().width,
+        );
+
+        if (target <= start) return;
+
+        let startTime: number | null = null;
+
+        const drift = (timestamp: number) => {
+          startTime ??= timestamp;
+          const progress = Math.min(
+            (timestamp - startTime) / INTRO_DRIFT_DURATION_MS,
+            1,
+          );
+          track.scrollLeft = start + (target - start) * easeOutCubic(progress);
+
+          if (progress < 1) {
+            animationFrameRef.current = window.requestAnimationFrame(drift);
+          } else {
+            animationFrameRef.current = null;
+            updateControlState();
+          }
+        };
+
+        animationFrameRef.current = window.requestAnimationFrame(drift);
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(root);
+
+    return () => {
+      observer.disconnect();
+      if (animationFrameRef.current !== null) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [updateControlState]);
+
+  const scrollTrack = useCallback(
+    (direction: -1 | 1) => {
+      const track = tracksRef.current[activeCategory];
+
+      if (!track) return;
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      track.scrollBy({
+        behavior: reduceMotion ? "auto" : "smooth",
+        left: direction * Math.max(track.clientWidth * 0.82, 240),
       });
-    }, AUTOPLAY_DELAY_MS);
+    },
+    [activeCategory],
+  );
 
-    return () => window.clearInterval(intervalId);
-  }, []);
-
-  const scrollTrack = useCallback((direction: -1 | 1) => {
-    const track = trackRef.current;
-
-    if (!track) return;
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    track.scrollBy({
-      behavior: reduceMotion ? "auto" : "smooth",
-      left: direction * Math.max(track.clientWidth * 0.82, 240),
-    });
-  }, []);
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
+  const handleTrackKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
 
     event.preventDefault();
     scrollTrack(event.key === "ArrowLeft" ? -1 : 1);
   };
 
-  const handleBlur = (event: FocusEvent<HTMLDivElement>) => {
-    if (!event.currentTarget.contains(event.relatedTarget)) {
-      interactionRef.current.hasFocus = false;
-    }
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    category: AirlineCategory,
+  ) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+    event.preventDefault();
+    const categories = groups.map((group) => group.category);
+    const currentIndex = categories.indexOf(category);
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const nextIndex = (currentIndex + direction + categories.length) % categories.length;
+    const nextCategory = categories[nextIndex];
+
+    setActiveCategory(nextCategory);
+    tabsRef.current[nextCategory]?.focus();
   };
 
   return (
     <div
       className="airline-carousel"
-      data-airline-carousel={category}
-      data-autoplay="right"
-      onBlurCapture={handleBlur}
-      onFocusCapture={() => {
-        interactionRef.current.hasFocus = true;
-      }}
-      onMouseEnter={() => {
-        interactionRef.current.isHovered = true;
-      }}
-      onMouseLeave={() => {
-        interactionRef.current.isHovered = false;
-      }}
+      data-airline-carousel="segmented"
+      ref={rootRef}
     >
-      <div className="mb-4 flex items-end justify-between gap-5">
+      <div className="mb-5 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold tracking-[-0.02em] text-ink">
-            {heading}
-          </h3>
-          <p className="mt-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">
-            {airlines.length} airlines
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-brass">
+            {airlineCount} airlines
           </p>
+          <div
+            aria-label="Airline categories"
+            className="airline-carousel-tabs mt-3"
+            role="tablist"
+          >
+            {groups.map((group) => {
+              const isActive = group.category === activeCategory;
+
+              return (
+                <button
+                  aria-controls={`airline-panel-${group.category}`}
+                  aria-selected={isActive}
+                  className="airline-carousel-tab"
+                  id={`airline-tab-${group.category}`}
+                  key={group.category}
+                  onClick={() => setActiveCategory(group.category)}
+                  onKeyDown={(event) =>
+                    handleTabKeyDown(event, group.category)
+                  }
+                  ref={(node) => {
+                    tabsRef.current[group.category] = node;
+                  }}
+                  role="tab"
+                  tabIndex={isActive ? 0 : -1}
+                  type="button"
+                >
+                  {group.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 self-end sm:self-auto">
           <button
-            aria-label={`Previous ${category} airlines`}
+            aria-label={`Previous ${activeGroup.label.toLowerCase()} airlines`}
             className="airline-carousel-control"
             disabled={atStart}
             onClick={() => scrollTrack(-1)}
@@ -163,7 +259,7 @@ export function AirlineCarousel({
             <ArrowIcon direction="left" />
           </button>
           <button
-            aria-label={`Next ${category} airlines`}
+            aria-label={`Next ${activeGroup.label.toLowerCase()} airlines`}
             className="airline-carousel-control"
             disabled={atEnd}
             onClick={() => scrollTrack(1)}
@@ -174,37 +270,51 @@ export function AirlineCarousel({
         </div>
       </div>
 
-      <ul
-        aria-label={`${heading} airline carousel`}
-        aria-live="off"
-        className="airline-carousel-track"
-        onKeyDown={handleKeyDown}
-        onScroll={updateControlState}
-        ref={trackRef}
-        tabIndex={0}
-      >
-        {airlines.map((airline) => (
-          <li
-            className="airline-carousel-cell group"
-            data-airline-logo={airline.name}
-            key={airline.name}
+      {groups.map((group) => (
+        <div
+          aria-labelledby={`airline-tab-${group.category}`}
+          hidden={group.category !== activeCategory}
+          id={`airline-panel-${group.category}`}
+          key={group.category}
+          role="tabpanel"
+        >
+          <ul
+            aria-label={`${group.label} airline carousel`}
+            aria-live="off"
+            className="airline-carousel-track"
+            data-airline-category={group.category}
+            onKeyDown={handleTrackKeyDown}
+            onScroll={
+              group.category === activeCategory ? updateControlState : undefined
+            }
+            ref={(node) => {
+              tracksRef.current[group.category] = node;
+            }}
+            tabIndex={0}
           >
-            <span aria-hidden="true" className="airline-logo-frame">
-              <Image
-                alt=""
-                className="airline-logo-image"
-                height={airline.height}
-                src={airline.src}
-                unoptimized
-                width={airline.width}
-              />
-            </span>
-            <span className="text-center font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-muted transition-colors duration-200 group-hover:text-ink">
-              {airline.name}
-            </span>
-          </li>
-        ))}
-      </ul>
+            {group.airlines.map((airline) => (
+              <li
+                className="airline-carousel-cell group"
+                data-airline-logo={airline.name}
+                key={airline.name}
+              >
+                <span aria-hidden="true" className="airline-logo-frame">
+                  <Image
+                    alt=""
+                    className="airline-logo-image"
+                    height={airline.height}
+                    src={airline.src}
+                    width={airline.width}
+                  />
+                </span>
+                <span className="text-center font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-muted transition-colors duration-200 group-hover:text-ink">
+                  {airline.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }

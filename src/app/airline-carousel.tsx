@@ -2,12 +2,15 @@
 
 import Image from "next/image";
 import {
+  type FocusEvent,
   type KeyboardEvent,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
+
+import { getNextCarouselScrollLeft } from "./airline-carousel-motion";
 
 export type AirlineLogo = {
   name: string;
@@ -21,6 +24,8 @@ type AirlineCarouselProps = {
   category: "local" | "international";
   heading: string;
 };
+
+const AUTOPLAY_DELAY_MS = 2_800;
 
 function ArrowIcon({ direction }: Readonly<{ direction: "left" | "right" }>) {
   return (
@@ -42,6 +47,7 @@ export function AirlineCarousel({
   heading,
 }: Readonly<AirlineCarouselProps>) {
   const trackRef = useRef<HTMLUListElement>(null);
+  const interactionRef = useRef({ hasFocus: false, isHovered: false });
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
@@ -61,6 +67,36 @@ export function AirlineCarousel({
 
     return () => window.removeEventListener("resize", updateControlState);
   }, [updateControlState]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+
+    if (!track || reducedMotion.matches) return;
+
+    const intervalId = window.setInterval(() => {
+      const { hasFocus, isHovered } = interactionRef.current;
+
+      if (hasFocus || isHovered || document.hidden) return;
+
+      const maxScrollLeft = track.scrollWidth - track.clientWidth;
+      const scrollStep = Math.max(track.clientWidth * 0.82, 240);
+      const nextScrollLeft = getNextCarouselScrollLeft(
+        track.scrollLeft,
+        maxScrollLeft,
+        scrollStep,
+      );
+
+      track.scrollTo({
+        behavior: nextScrollLeft === 0 ? "auto" : "smooth",
+        left: nextScrollLeft,
+      });
+    }, AUTOPLAY_DELAY_MS);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   const scrollTrack = useCallback((direction: -1 | 1) => {
     const track = trackRef.current;
@@ -84,8 +120,28 @@ export function AirlineCarousel({
     scrollTrack(event.key === "ArrowLeft" ? -1 : 1);
   };
 
+  const handleBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      interactionRef.current.hasFocus = false;
+    }
+  };
+
   return (
-    <div className="airline-carousel" data-airline-carousel={category}>
+    <div
+      className="airline-carousel"
+      data-airline-carousel={category}
+      data-autoplay="right"
+      onBlurCapture={handleBlur}
+      onFocusCapture={() => {
+        interactionRef.current.hasFocus = true;
+      }}
+      onMouseEnter={() => {
+        interactionRef.current.isHovered = true;
+      }}
+      onMouseLeave={() => {
+        interactionRef.current.isHovered = false;
+      }}
+    >
       <div className="mb-4 flex items-end justify-between gap-5">
         <div>
           <h3 className="text-lg font-semibold tracking-[-0.02em] text-ink">
@@ -120,6 +176,7 @@ export function AirlineCarousel({
 
       <ul
         aria-label={`${heading} airline carousel`}
+        aria-live="off"
         className="airline-carousel-track"
         onKeyDown={handleKeyDown}
         onScroll={updateControlState}

@@ -58,6 +58,10 @@ assert.ok(
   !html.includes("Global Pinoy Travel"),
   "Retired agency branding must not be rendered",
 );
+assert.ok(
+  !html.includes("Logos are shown for airline identification only"),
+  "The airline-identification disclaimer must not be rendered",
+);
 for (const redundantQualifier of [
   "Example trip brief",
   "Illustrative",

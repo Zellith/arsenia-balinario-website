@@ -420,9 +420,6 @@ function AirlineBand() {
             heading="International airlines"
           />
         </div>
-        <p className="mt-4 text-xs leading-5 text-muted">
-          Logos are shown for airline identification only.
-        </p>
       </div>
     </section>
   );

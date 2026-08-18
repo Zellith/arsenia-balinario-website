@@ -48,13 +48,14 @@ test("applies the Phase 0 display-weight and shadow foundations", async () => {
 test("provides canonical metadata, an Open Graph image, and TravelAgency JSON-LD", async () => {
   const layout = await read("src/app/layout.tsx");
   const page = await read("src/app/page.tsx");
+  const seo = await read("src/app/seo.ts");
   const openGraphImage = await read("src/app/opengraph-image.tsx");
 
   assert.match(layout, /metadataBase:/);
   assert.match(layout, /alternates:\s*{\s*canonical:/s);
-  assert.match(layout, /VERCEL_PROJECT_PRODUCTION_URL/);
-  assert.match(page, /"@type":\s*"TravelAgency"/);
-  assert.match(page, /areaServed:/);
+  assert.match(seo, /VERCEL_PROJECT_PRODUCTION_URL/);
+  assert.match(seo, /"@type":\s*"TravelAgency"/);
+  assert.match(seo, /areaServed:/);
   assert.match(page, /application\/ld\+json/);
   assert.match(openGraphImage, /new ImageResponse/);
   assert.match(openGraphImage, /width:\s*1200/);

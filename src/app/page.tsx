@@ -4,22 +4,9 @@ import { AirlineCarousel, type AirlineLogo } from "./airline-carousel";
 import { AtmosphereCanvas } from "./atmosphere-canvas";
 import { FlightPath } from "./flight-path";
 import { ScrollReveal } from "./scroll-reveal";
+import { entityJsonLd, messengerUrl } from "./seo";
 import { heroFragmentShader } from "./shaders/hero.frag";
 import { nightFragmentShader } from "./shaders/night.frag";
-
-const messengerUrl = "https://m.me/arsenia.balinario";
-
-const travelAgencyJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "TravelAgency",
-  name: "SkyBound Travel Hub",
-  description:
-    "Personal assistance with local and international flight options through Messenger.",
-  email: "mailto:amb.grab042364@gmail.com",
-  telephone: ["+639665891165", "+639434106825"],
-  areaServed: ["Philippines", "International"],
-  sameAs: [messengerUrl],
-};
 
 const trustItems = [
   {
@@ -365,7 +352,7 @@ function HeroSection() {
           <div className="portrait-frame relative overflow-hidden rounded-[1.25rem] border border-line bg-mist p-3 shadow-[var(--shadow-lift)] sm:p-4">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[.9rem] bg-[#d8d3ca]">
               <Image
-                alt="Arsenia, travel consultant for SkyBound Travel Hub"
+                alt="Arsenia Balinario, travel consultant for SkyBound Travel Hub"
                 className="object-cover object-[50%_30%]"
                 fill
                 priority
@@ -629,7 +616,7 @@ function SiteFooter() {
       <div className="mx-auto flex max-w-[1200px] flex-col gap-7 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="font-semibold text-ink">SkyBound Travel Hub</p>
-          <p className="mt-1">Arsenia · Travel Consultant</p>
+          <p className="mt-1">Arsenia Balinario · Travel Consultant</p>
         </div>
         <div className="flex flex-col gap-2 sm:items-end">
           <a
@@ -672,7 +659,7 @@ export default function Home() {
     <>
       <script
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(travelAgencyJsonLd).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(entityJsonLd).replace(/</g, "\\u003c"),
         }}
         type="application/ld+json"
       />

@@ -3,13 +3,27 @@
 :root {
   --paper: #fbfaf7;
   --surface: #ffffff;
+  --haze: #e8edef;
   --ink: #0b2238;
-  --muted: #5f6f80;
+  --muted: #566677;
+  --brass: #8c6127;
   --line: #dbe2e7;
+  --line-soft: #e9eef1;
   --messenger: #155fbd;
   --messenger-hover: #0f4f9f;
   --night: #0a2034;
+  --night-deep: #071726;
   --mist: #f1f4f3;
+  --shadow-card: 0 1px 2px rgb(10 32 52 / 0.06),
+    0 12px 32px -8px rgb(10 32 52 / 0.1);
+  --shadow-lift: 0 1px 2px rgb(10 32 52 / 0.08),
+    0 20px 48px -12px rgb(10 32 52 / 0.14);
+  --duration-fast: 180ms;
+  --duration-entrance: 680ms;
+  --duration-narrative: 1600ms;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-narrative: cubic-bezier(0.22, 1, 0.36, 1);
   --background: var(--paper);
   --foreground: var(--ink);
 }
@@ -19,15 +33,20 @@
   --color-foreground: var(--foreground);
   --color-paper: var(--paper);
   --color-surface: var(--surface);
+  --color-haze: var(--haze);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-brass: var(--brass);
   --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
   --color-messenger: var(--messenger);
   --color-messenger-hover: var(--messenger-hover);
   --color-night: var(--night);
+  --color-night-deep: var(--night-deep);
   --color-mist: var(--mist);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader);
 }
 
 html {
@@ -45,6 +64,63 @@ body {
 ::selection {
   background: #1b74e4;
   color: white;
+}
+
+.human-voice {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.hero-atmosphere {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero-atmosphere::before,
+.atmosphere-canvas {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-atmosphere::before {
+  content: "";
+}
+
+.atmosphere-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1023px) {
+  [data-atmosphere-canvas] {
+    display: none;
+  }
+}
+
+[data-atmosphere="off"] [data-atmosphere-canvas],
+[data-atmosphere="off"] .hero-atmosphere::before,
+[data-atmosphere="off"] .closing-atmosphere::before {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .hero-atmosphere::before {
+    background:
+      radial-gradient(
+        ellipse 38% 28% at 5% 94%,
+        rgb(220 185 139 / 0.24),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 30% 23% at 24% 96%,
+        rgb(169 204 218 / 0.15),
+        transparent 74%
+      );
+  }
 }
 
 @keyframes hero-rise {
@@ -73,7 +149,7 @@ body {
 
 .hero-reveal {
   opacity: 0;
-  animation: hero-rise 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: hero-rise var(--duration-entrance) var(--ease-entrance) forwards;
 }
 
 .hero-reveal-1 {
@@ -94,13 +170,13 @@ body {
 
 .portrait-reveal {
   opacity: 0;
-  animation: portrait-settle 840ms 210ms cubic-bezier(0.22, 1, 0.36, 1)
-    forwards;
+  animation: portrait-settle var(--duration-entrance) 210ms
+    var(--ease-entrance) forwards;
 }
 
 .portrait-frame,
 .portrait-frame img {
-  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 500ms var(--ease-entrance);
 }
 
 .portrait-frame:hover {
@@ -109,6 +185,67 @@ body {
 
 .portrait-frame:hover img {
   transform: scale(1.012);
+}
+
+.scroll-reveal {
+  --reveal-delay: 0ms;
+
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-entrance) var(--ease-entrance) var(--reveal-delay),
+    transform var(--duration-entrance) var(--ease-entrance) var(--reveal-delay);
+}
+
+.scroll-reveal[data-reveal-state="pending"] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.scroll-reveal[data-reveal-state="pending"][data-reveal-variant="rise"] {
+  transform: translate3d(0, 16px, 0) scale(0.992);
+}
+
+.scroll-reveal[data-reveal-state="pending"][data-reveal-variant="route"] {
+  transform: translate3d(-14px, 0, 0);
+}
+
+.scroll-reveal[data-reveal-state="pending"][data-reveal-variant="card"] {
+  transform: translate3d(-18px, 10px, 0) rotate(-0.35deg) scale(0.992);
+}
+
+.scroll-reveal[data-reveal-state="pending"][data-reveal-variant="checkpoint"] {
+  transform: translate3d(0, 14px, 0) scale(0.995);
+}
+
+.scroll-reveal[data-reveal-state="pending"][data-reveal-variant="message"] {
+  transform: translate3d(8px, 12px, 0) scale(0.985);
+}
+
+.scroll-reveal[data-reveal-variant="rule"] {
+  position: relative;
+}
+
+.scroll-reveal[data-reveal-state="pending"][data-reveal-variant="rule"] {
+  transform: translate3d(0, 12px, 0);
+}
+
+.scroll-reveal[data-reveal-variant="rule"]::before {
+  position: absolute;
+  top: -1rem;
+  left: 0;
+  width: 2rem;
+  height: 1px;
+  background: var(--brass);
+  content: "";
+  transform: scaleX(1);
+  transform-origin: left center;
+  transition: transform var(--duration-entrance) var(--ease-entrance)
+    var(--reveal-delay);
+}
+
+.scroll-reveal[data-reveal-state="pending"][data-reveal-variant="rule"]::before {
+  transform: scaleX(0);
 }
 
 .airline-carousel-control {
@@ -122,9 +259,9 @@ body {
   background: var(--surface);
   color: var(--ink);
   transition:
-    border-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .airline-carousel-control svg {
@@ -149,6 +286,39 @@ body {
   opacity: 0.34;
 }
 
+.airline-carousel-tabs {
+  display: inline-flex;
+  gap: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  padding: 0.25rem;
+}
+
+.airline-carousel-tab {
+  min-height: 2.5rem;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.airline-carousel-tab[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgb(10 32 52 / 0.08);
+}
+
+.airline-carousel-tab:focus-visible {
+  outline: 2px solid var(--messenger);
+  outline-offset: 2px;
+}
+
 .airline-carousel-track {
   display: flex;
   overflow-x: auto;
@@ -160,6 +330,20 @@ body {
   scroll-snap-type: inline mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 clamp(1.5rem, 6vw, 3.5rem),
+    #000 calc(100% - clamp(1.5rem, 6vw, 3.5rem)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 clamp(1.5rem, 6vw, 3.5rem),
+    #000 calc(100% - clamp(1.5rem, 6vw, 3.5rem)),
+    transparent 100%
+  );
 }
 
 .airline-carousel-track::-webkit-scrollbar {
@@ -175,10 +359,10 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  border-inline-end: 1px solid var(--line);
+  border-inline-end: 1px solid var(--line-soft);
   padding: 1.5rem 1rem;
   background: var(--surface);
-  transition: background-color 220ms ease;
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
 
 .airline-carousel-cell:hover {
@@ -199,17 +383,18 @@ body {
   height: 3.75rem;
   max-width: 100%;
   object-fit: contain;
-  filter: saturate(0.94);
-  opacity: 0.94;
+  filter: saturate(0.15) contrast(0.95);
+  opacity: 0.72;
   transform: translateY(0) scale(1);
   transition:
-    filter 260ms ease,
-    opacity 260ms ease,
-    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    filter 260ms var(--ease-out),
+    opacity 260ms var(--ease-out),
+    transform 260ms var(--ease-entrance);
 }
 
-.airline-carousel-cell:hover .airline-logo-image {
-  filter: saturate(1.04);
+.airline-carousel-cell:hover .airline-logo-image,
+.airline-carousel-track:focus-visible .airline-logo-image {
+  filter: saturate(1) contrast(1);
   opacity: 1;
   transform: translateY(-2px) scale(1.015);
 }
@@ -237,26 +422,196 @@ body {
   border-radius: 1.25rem;
   background: var(--surface);
   padding: clamp(1.25rem, 3vw, 2rem);
-  box-shadow: 0 22px 60px rgb(10 32 52 / 0.08);
+  box-shadow: var(--shadow-card);
 }
 
 .trip-route {
-  display: grid;
-  grid-template-columns: minmax(1.25rem, 3.5rem) auto minmax(1.25rem, 3.5rem);
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--messenger);
+  position: relative;
+  width: 5rem;
+  height: 2rem;
+  color: var(--brass);
 }
 
-.trip-route span {
+.trip-route-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.trip-route-line path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-dasharray: 4 7;
+  stroke-dashoffset: 0;
+  vector-effect: non-scaling-stroke;
+}
+
+.trip-route-plane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  offset-anchor: center;
+  offset-distance: 100%;
+  offset-path: path("M2 16 C24 6 52 26 78 16");
+  offset-rotate: auto 8deg;
+}
+
+.trip-route-plane svg {
+  width: 100%;
+  height: 100%;
+}
+
+.trip-route[data-flight-state="waiting"] .trip-route-line path,
+.trip-route[data-flight-state="running"] .trip-route-line path {
+  stroke-dashoffset: 64;
+}
+
+.trip-route[data-flight-state="waiting"] .trip-route-plane,
+.trip-route[data-flight-state="running"] .trip-route-plane {
+  offset-distance: 0%;
+}
+
+.trip-route[data-flight-state="running"] .trip-route-line path {
+  animation: flight-path-draw var(--duration-narrative) var(--ease-narrative)
+    forwards;
+}
+
+.trip-route[data-flight-state="running"] .trip-route-plane {
+  animation: flight-plane-travel var(--duration-narrative) var(--ease-narrative)
+    forwards;
+}
+
+@keyframes flight-path-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes flight-plane-travel {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@media (min-width: 640px) {
+  .trip-route {
+    width: 9rem;
+  }
+
+  .trip-route-plane {
+    offset-path: path("M4 16 C44 5 100 27 140 16");
+  }
+}
+
+.process-timeline {
+  position: relative;
+}
+
+.process-timeline::before {
+  position: absolute;
+  top: 2.25rem;
+  bottom: 2.25rem;
+  left: 1.5rem;
+  width: 1px;
+  background: var(--line);
+  content: "";
+}
+
+.process-step {
+  position: relative;
+  padding: 0 0 3.25rem 4rem;
+}
+
+.process-step:last-child {
+  padding-bottom: 0;
+}
+
+.process-step::before {
+  position: absolute;
+  z-index: 2;
+  top: 1.55rem;
+  left: 1.05rem;
+  width: 0.9rem;
   height: 1px;
-  background-image: linear-gradient(to right, var(--line) 50%, transparent 50%);
-  background-size: 6px 1px;
+  background: var(--brass);
+  content: "";
+}
+
+.process-step-number {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  background: var(--paper);
+  padding-right: 0.75rem;
+  color: var(--brass);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(3rem, 7vw, 4rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.07em;
+}
+
+.closing-section {
+  --tw-ring-offset-color: var(--night);
+}
+
+.closing-atmosphere {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--night) 0%, var(--night-deep) 100%);
+}
+
+.closing-atmosphere::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 52% 44% at 92% 4%,
+      rgb(21 95 189 / 0.06),
+      transparent 72%
+    ),
+    linear-gradient(180deg, var(--night) 0%, var(--night-deep) 100%);
+  content: "";
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .process-timeline::before {
+    top: 1.65rem;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 1px;
+  }
+
+  .process-step,
+  .process-step:last-child {
+    padding: 0;
+  }
+
+  .process-step::before {
+    top: 1.2rem;
+    left: 0;
+    width: 1px;
+    height: 0.9rem;
+  }
+
+  .process-step-number {
+    padding-right: 0.9rem;
+  }
 }
 
 .text-link-arrow {
   display: inline-block;
-  transition: transform 180ms ease;
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 
 .text-link:hover .text-link-arrow {
@@ -277,5 +632,30 @@ body {
   .portrait-reveal {
     opacity: 1;
     transform: none;
+  }
+
+  [data-scroll-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  [data-scroll-reveal]::before {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  [data-atmosphere-canvas] {
+    display: none;
+  }
+
+  .trip-route-line path {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+
+  .trip-route-plane {
+    offset-distance: 100% !important;
+    animation: none !important;
   }
 }
